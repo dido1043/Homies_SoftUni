@@ -9,8 +9,8 @@ namespace Homies.Data
             : base(options)
         {
         }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
             //modelBuilder
             //    .Entity<Type>()
             //    .HasData(new Type()
@@ -35,6 +35,6 @@ namespace Homies.Data
             //    });
 
             //base.OnModelCreating(modelBuilder);
-        }
+        //}
     }
 }
