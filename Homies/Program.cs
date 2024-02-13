@@ -1,6 +1,7 @@
 using Homies.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,15 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<HomiesDbContext>();
 builder.Services.AddControllersWithViews();
 
+builder.Services.Configure<IdentityOptions>( opt =>
+{
+    //SignIn settings
+    opt.SignIn.RequireConfirmedEmail = false;
+    //Password settings
+    opt.Password.RequireDigit = false;
+    opt.Password.RequireNonAlphanumeric = false;
+    opt.Password.RequireUppercase = false;
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
