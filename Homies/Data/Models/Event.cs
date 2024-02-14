@@ -19,10 +19,11 @@ namespace Homies.Data.Models
         [MinLength(ValidationConstants.ValidationConstants.DescriptionMinLength)]
         public string Description { get; set; }
 
+        
+        [Required]
+        public string OrganiserId { get; set; }
+        [Required]
         [ForeignKey(nameof(OrganiserId))]
-        [Required]
-        public int OrganiserId { get; set; }
-        [Required]
         public IdentityUser Organiser { get; set; }
 
         [Required]
