@@ -1,11 +1,12 @@
 ﻿using Homies.Data;
 using Homies.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Net.WebSockets;
 
 namespace Homies.Controllers
 {
+    [Authorize]
     public class EventController : Controller
     {
         private readonly HomiesDbContext data;
