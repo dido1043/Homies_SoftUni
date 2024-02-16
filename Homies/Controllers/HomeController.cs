@@ -6,8 +6,12 @@ namespace Homies.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            if (User.Identity.IsAuthenticated && User != null)
+            {
+                return RedirectToAction("All","Event");
+            }
             return View();
         }
 
