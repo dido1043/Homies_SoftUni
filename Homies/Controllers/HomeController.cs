@@ -8,7 +8,7 @@ namespace Homies.Controllers
     {
         public async Task<IActionResult> Index()
         {
-            if (User.Identity.IsAuthenticated && User != null)
+            if (User.Identity.IsAuthenticated && User?.Identity != null)
             {
                 return RedirectToAction("All","Event");
             }
