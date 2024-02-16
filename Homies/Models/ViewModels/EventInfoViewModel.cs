@@ -1,12 +1,11 @@
 ﻿using Homies.Data.ValidationConstants;
-using Humanizer;
 
 namespace Homies.Models.ViewModels
 {
     public class EventInfoViewModel
     {
         public EventInfoViewModel(
-            int id, 
+            int id,
             string name,
             DateTime start,
             string type,

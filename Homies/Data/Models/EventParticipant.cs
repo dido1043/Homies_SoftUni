@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.CodeAnalysis.Options;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Homies.Data.Models

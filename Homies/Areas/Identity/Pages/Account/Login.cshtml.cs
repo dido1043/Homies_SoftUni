@@ -29,6 +29,7 @@ namespace Homies.Areas.Identity.Pages.Account
         public InputModel Input { get; set; }
 
 
+
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
@@ -64,6 +65,7 @@ namespace Homies.Areas.Identity.Pages.Account
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
+
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -78,7 +80,6 @@ namespace Homies.Areas.Identity.Pages.Account
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-
             ReturnUrl = returnUrl;
         }
 
@@ -91,7 +92,7 @@ namespace Homies.Areas.Identity.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, true, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password,true, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");

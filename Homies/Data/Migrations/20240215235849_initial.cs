@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Homies.Data.Migrations
 {
-    public partial class init : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,8 +30,7 @@ namespace Homies.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    OrganiserId = table.Column<int>(type: "int", nullable: false),
-                    OrganiserId1 = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    OrganiserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Start = table.Column<DateTime>(type: "datetime2", nullable: false),
                     End = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -41,8 +40,8 @@ namespace Homies.Data.Migrations
                 {
                     table.PrimaryKey("PK_Events", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Events_AspNetUsers_OrganiserId1",
-                        column: x => x.OrganiserId1,
+                        name: "FK_Events_AspNetUsers_OrganiserId",
+                        column: x => x.OrganiserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -95,9 +94,9 @@ namespace Homies.Data.Migrations
                 column: "HelperId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Events_OrganiserId1",
+                name: "IX_Events_OrganiserId",
                 table: "Events",
-                column: "OrganiserId1");
+                column: "OrganiserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_TypeId",

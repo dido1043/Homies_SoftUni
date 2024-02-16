@@ -9,20 +9,17 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<HomiesDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<HomiesDbContext>();
-builder.Services.AddControllersWithViews();
-
-builder.Services.Configure<IdentityOptions>( opt =>
+  
+builder.Services.AddDefaultIdentity<IdentityUser>(opt =>
 {
-    //SignIn settings
-    opt.SignIn.RequireConfirmedEmail = false;
-    //Password settings
+    opt.SignIn.RequireConfirmedAccount = false;
     opt.Password.RequireDigit = false;
     opt.Password.RequireNonAlphanumeric = false;
     opt.Password.RequireUppercase = false;
-});
+}).AddEntityFrameworkStores<HomiesDbContext>();
+
+builder.Services.AddControllersWithViews();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

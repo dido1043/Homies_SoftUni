@@ -12,14 +12,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Homies.Data.Migrations
 {
     [DbContext(typeof(HomiesDbContext))]
-    [Migration("20240214114059_init")]
-    partial class init
+    [Migration("20240215235849_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.26")
+                .HasAnnotation("ProductVersion", "6.0.27")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -48,10 +48,7 @@ namespace Homies.Data.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int>("OrganiserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("OrganiserId1")
+                    b.Property<string>("OrganiserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -63,7 +60,7 @@ namespace Homies.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrganiserId1");
+                    b.HasIndex("OrganiserId");
 
                     b.HasIndex("TypeId");
 
@@ -331,7 +328,7 @@ namespace Homies.Data.Migrations
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Organiser")
                         .WithMany()
-                        .HasForeignKey("OrganiserId1")
+                        .HasForeignKey("OrganiserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -1,7 +1,6 @@
 ﻿using Homies.Data.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Type = Homies.Data.Models.Type;
 
 namespace Homies.Data
@@ -20,7 +19,7 @@ namespace Homies.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<EventParticipant>()
-                .HasKey( ep => new { ep.EventId, ep.HelperId});
+                .HasKey(ep => new { ep.EventId, ep.HelperId });
             modelBuilder
                 .Entity<Type>()
                 .HasData(new Type()
@@ -46,6 +45,7 @@ namespace Homies.Data
 
             base.OnModelCreating(modelBuilder);
         }
+
         public DbSet<Event> Events { get; set; }
         public DbSet<Type> Types { get; set; }
         public DbSet<EventParticipant> EventParticipants { get; set; }
