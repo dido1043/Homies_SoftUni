@@ -1,9 +1,11 @@
 ﻿using Homies.Data;
 using Homies.Data.Models;
+using Homies.Data.ValidationConstants;
 using Homies.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using System.Reflection;
 using System.Security.Claims;
 
@@ -30,6 +32,7 @@ namespace Homies.Controllers
 
             return View(model);
         }
+
         [HttpGet]
         public async Task<IActionResult> Joined()
         {
@@ -48,6 +51,7 @@ namespace Homies.Controllers
                 .ToListAsync();
             return View(events);
         }
+
         [HttpPost]
         public async Task<IActionResult> Join(int id)
         {
@@ -75,9 +79,104 @@ namespace Homies.Controllers
             }
             return RedirectToAction("Joined", "Event");
         }
+        [HttpPost]
+        public async Task<IActionResult> Leave(int id)
+        {
+            //Get event
+            var entity = await homies.Events
+                .Where(e => e.Id == id)
+                .Include(ep => ep.EventsParticipants)
+                .FirstOrDefaultAsync();
+
+            if (entity == null)
+            {
+                return BadRequest();
+            }
+            var userId = GetUser();
+
+            var ep = entity.EventsParticipants.FirstOrDefault(ep => ep.HelperId == userId);
+
+            if (ep == null)
+            {
+                return BadRequest();
+            }
+            entity.EventsParticipants.Remove(ep);
+            await homies.SaveChangesAsync();
+            return RedirectToAction("All", "Event");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Add()
+        {
+            var eventForm = new EventFormViewModel();
+            eventForm.Types = await GetTypes();
+
+
+            return View(eventForm);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Add(EventFormViewModel model)
+        {
+            DateTime start = DateTime.Now;
+            DateTime end = DateTime.Now;
+            //Check start and end date format
+            if (!DateTime.TryParseExact(
+                model.Start,
+                ValidationConstants.DateTimeFormat,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out start))
+            {
+                ModelState.AddModelError(nameof(model.Start), $"Invalid date: Format must be {ValidationConstants.DateTimeFormat}");
+            }
+            if (!DateTime.TryParseExact(
+                model.End,
+                ValidationConstants.DateTimeFormat,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out end))
+            {
+                ModelState.AddModelError(nameof(model.End), $"Invalid date: Format must be {ValidationConstants.DateTimeFormat}");
+            }
+            if (!ModelState.IsValid)
+            {
+                model.Types = await GetTypes();
+                return View(model);
+            }
+            //creating entity
+            var entity = new Event
+            {
+                Name = model.Name,
+                Description = model.Description,
+                OrganiserId = GetUser(),
+                TypeId = model.TypeId,
+                CreatedOn = DateTime.Now,
+                Start = start,
+                End = end
+            };
+            //Adding entity
+            await homies.Events.AddAsync(entity);
+            await homies.SaveChangesAsync();
+
+            return RedirectToAction("All", "Event");
+        }
+
         private string GetUser()
         {
             return User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
+        }
+        private async Task<IEnumerable<TypeViewModel>> GetTypes()
+        {
+            return await homies.Types
+                .AsNoTracking()
+                .Select(t => new TypeViewModel()
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                })
+                .ToListAsync();
         }
     }
 }
