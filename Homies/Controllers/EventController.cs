@@ -163,6 +163,82 @@ namespace Homies.Controllers
             return RedirectToAction("All", "Event");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var e = await homies.Events
+                .FindAsync(id);
+            if (e == null)
+            {
+                return BadRequest();
+            }
+            var userId = GetUser();
+            if (e.OrganiserId != userId)
+            {
+                return Unauthorized();
+            }
+
+            var model = new EventFormViewModel()
+            {
+                Name = e.Name, 
+                Description = e.Description, 
+                Start = e.Start.ToString(ValidationConstants.DateTimeFormat),
+                End = e.End.ToString(ValidationConstants.DateTimeFormat),
+                TypeId = e.TypeId
+            };
+            model.Types = await GetTypes();
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(EventFormViewModel model, int id)
+        {
+            var entity = await homies.Events.FindAsync(id);
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
+            if (entity.OrganiserId != GetUser())
+            {
+                return Unauthorized();
+            }
+            DateTime start = DateTime.Now;
+            DateTime end = DateTime.Now;
+            //Check start and end date format
+            if (!DateTime.TryParseExact(
+                model.Start,
+                ValidationConstants.DateTimeFormat,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out start))
+            {
+                ModelState.AddModelError(nameof(model.Start), $"Invalid date: Format must be {ValidationConstants.DateTimeFormat}");
+            }
+            if (!DateTime.TryParseExact(
+                model.End,
+                ValidationConstants.DateTimeFormat,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out end))
+            {
+                ModelState.AddModelError(nameof(model.End), $"Invalid date: Format must be {ValidationConstants.DateTimeFormat}");
+            }
+            if (!ModelState.IsValid)
+            {
+                model.Types = await GetTypes();
+                return View(model);
+            }
+            entity.Name = model.Name;
+            entity.Description = model.Description;
+            entity.Start = start;
+            entity.End = end;
+            entity.TypeId = model.TypeId;
+
+            await homies.SaveChangesAsync();
+            return RedirectToAction("All", "Event");
+        }
+
+
         private string GetUser()
         {
             return User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
