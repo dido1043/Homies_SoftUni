@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
-using System.Reflection;
 using System.Security.Claims;
 
 namespace Homies.Controllers
@@ -237,7 +236,30 @@ namespace Homies.Controllers
             await homies.SaveChangesAsync();
             return RedirectToAction("All", "Event");
         }
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var model = await homies.Events
+                .AsNoTracking()
+                .Where(e => e.Id == id)
+                .Select(e => new DetailsViewModel()
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    Description = e.Description,
+                    Start = e.Start.ToString(ValidationConstants.DateTimeFormat),
+                    End = e.End.ToString(ValidationConstants.DateTimeFormat),
+                    Type = e.Type.Name,
+                    Organiser = e.Organiser.UserName,
+                    CreatedOn = e.CreatedOn.ToString(ValidationConstants.DateTimeFormat),
+                }).FirstOrDefaultAsync();
+            if (model == null)
+            {
+                return BadRequest();
+            }
 
+            return View(model);
+        }
 
         private string GetUser()
         {
